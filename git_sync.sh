@@ -20,6 +20,11 @@ function check_variable {
 }
 
 
+echo '================================================'
+echo ' Starting Git Synchronization Script'
+echo '================================================'
+
+
 check_variable "GIT_REPO_URL" rquired
 check_variable "DESTINATION_DIRECTORY" required
 check_variable "GIT_REPO_BRANCH"
@@ -41,7 +46,7 @@ TEMP_DIR=$(mktemp -d)
 # TODO: Option to just sync git directly in the destination directory.
 # TODO: Documentation.
 
-echo
+echo "--------------------------------"
 echo "Starting git clone..." 
 echo "--------------------------------"
 
@@ -118,6 +123,6 @@ else
     echo "Halting without performing any additional work."
 fi
 
-echo '================================'
+echo '================================================'
 echo ' Git Sync Complete'
-echo '================================'
+echo '================================================'
