@@ -35,16 +35,15 @@ fi
 
 TEMP_DIR=$(mktemp -d)
 
+# TODO: Option to keep the git repo to save on network downloads
+# TODO: Optional Force Overwriting.
+# TODO: Option to use two directories and symlink swapping instead of tmpdir and Rsync
+# TODO: Option to just sync git directly in the destination directory.
+# TODO: Documentation.
+
 echo
 echo "Starting git clone..." 
 echo "--------------------------------"
-
-# TODO: Option to keep the git repo to save on network downloads
-# TODO: Optional Force Overwriting.  
-# TODO: Option to use two directories and symlink swapping instead of tmpdir and Rsync
-# TODO: Option to just sync git directly in the destination directory.
-# TODO: Option to turn off the debug output.
-# TODO: Documentation.
 
 # Construct git clone command arguments.
 git_clone_args=()
@@ -53,47 +52,71 @@ git_clone_args+=(--depth 1 "${GIT_REPO_URL}")
 if [[ ! -z "${GIT_REPO_BRANCH}" ]]; then git_clone_args+=(-b "${GIT_REPO_BRANCH}"); fi
 git_clone_args+=("${TEMP_DIR}")
 
+# Perform the git clone
+set -x
 git clone "${git_clone_args[@]}"
+set +x
 
-# if [[ ! -z "${GIT_REPO_BRANCH}" ]]; then
-#     git clone --progress --verbose --depth 1 "${GIT_REPO_URL}" -b "${GIT_REPO_BRANCH}" "${TEMP_DIR}" 
-# else
-#     git clone --progress --verbose --depth 1 "${GIT_REPO_URL}" "${TEMP_DIR}" 
-# fi
+if [ -d "${TEMP_DIR}" ]; then
 
-echo "--------------------------------"
-echo "Git Clone Complete!"
-echo '\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/'
-echo '||||||||||||||||||||||||||||||||'
-echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
-echo "Chowning files..."
+    echo "--------------------------------"
+    echo "Git Clone Complete!"
+    echo '\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/'
+    echo '||||||||||||||||||||||||||||||||'
+    echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
+    echo "Chowning files..."
 
-if [[ ! -z "${CHOWN_USER}" ]]; then
-    if [[ ! -z "${CHOWN_GROUP}" ]]; then
-        chown -R ${CHOWN_USER}:${CHOWN_GROUP} "${TEMP_DIR}"
-    else
-        chown -R ${CHOWN_USER} "${TEMP_DIR}"
+
+    if [[ ! -z "${CHOWN_USER}" ]]; then
+        if [[ ! -z "${CHOWN_GROUP}" ]]; then
+            set -x
+            chown -R ${CHOWN_USER}:${CHOWN_GROUP} "${TEMP_DIR}"
+            set +x
+        else
+            set -x
+            chown -R ${CHOWN_USER} "${TEMP_DIR}"
+            set +x
+        fi
     fi
+
+
+    echo "Chown Complete!"
+    echo '\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/'
+    echo '||||||||||||||||||||||||||||||||'
+    echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
+    echo "Rsyncing files into destination directory..."
+    echo "--------------------------------"
+
+    # Ensure the directory exists before using it.
+    set -x
+    mkdir -p "${DESTINATION_DIRECTORY}"
+    set +x
+
+    # Construct rsync arguments.
+    rsync_args=(-azh --delete)
+    if [[ ! -z "$VERBOSE" ]]; then rsync_args+=(-v); fi
+    rsync_args+=("${TEMP_DIR}" "${DESTINATION_DIRECTORY}")
+
+    # Perform the rsync.
+    set -x
+    rsync "${rsync_args[@]}"
+    set +x
+
+    echo "--------------------------------"
+    echo "Rsync Complete!"
+    echo '\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/'
+    echo '||||||||||||||||||||||||||||||||'
+    echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
+
+    set -x
+    rm -rf "${TEMP_DIR}"
+    set +x
+
+else
+    echo "--------------------------------"
+    echo "Git Clone Failed, unable to continue this syncronization attempt!"
+    echo "Halting without performing any additional work."
 fi
-
-echo "Chown Complete!"
-echo '\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/'
-echo '||||||||||||||||||||||||||||||||'
-echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
-echo "Rsyncing files into destination directory..."
-echo "--------------------------------"
-
-# Ensure the directory exists before using it.
-mkdir -p ${DESTINATION_DIRECTORY}
-rsync -avzh --delete "${TEMP_DIR}" "${DESTINATION_DIRECTORY}"
-
-echo "--------------------------------"
-echo "Rsync Complete!"
-echo '\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/'
-echo '||||||||||||||||||||||||||||||||'
-echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
-
-rm -rf "${TEMP_DIR}"
 
 echo '================================'
 echo ' Git Sync Complete'

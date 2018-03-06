@@ -47,3 +47,4 @@ fi
 
 echo
 echo "Git Sync Setup Complete !"
+echo
