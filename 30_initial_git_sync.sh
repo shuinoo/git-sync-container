@@ -6,3 +6,4 @@ set -x
 set +x
 echo "Initial Git Synchronization Complete!"
 echo
+touch /opt/initial_sync_complete

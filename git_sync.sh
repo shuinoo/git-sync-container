@@ -40,12 +40,6 @@ fi
 
 TEMP_DIR=$(mktemp -d)
 
-# TODO: Option to keep the git repo to save on network downloads
-# TODO: Optional Force Overwriting.
-# TODO: Option to use two directories and symlink swapping instead of tmpdir and Rsync
-# TODO: Option to just sync git directly in the destination directory.
-# TODO: Documentation.
-
 echo "--------------------------------"
 echo "Starting git clone..." 
 echo "--------------------------------"
