@@ -20,9 +20,9 @@ function check_variable {
 }
 
 
-echo '================================================'
+echo '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
 echo ' Starting Git Synchronization Script'
-echo '================================================'
+echo '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
 
 
 check_variable "GIT_REPO_URL" rquired
