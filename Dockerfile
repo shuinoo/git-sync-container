@@ -19,14 +19,8 @@ RUN curl -s https://raw.githubusercontent.com/envkey/envkey-source/master/instal
 COPY 20_git_sync_setup.sh /etc/my_init.d/20_git_sync_setup.sh
 RUN chmod +x /etc/my_init.d/20_git_sync_setup.sh
 
-COPY 30_initial_git_sync.sh /etc/my_init.d/30_initial_git_sync.sh
-RUN chmod +x /etc/my_init.d/30_initial_git_sync.sh
-
 COPY git_sync.sh /opt/git_sync.sh
 RUN chmod +x /opt/git_sync.sh
-
-COPY wait_for_initial_sync.sh /opt/wait_for_initial_sync.sh
-RUN chmod +x /opt/wait_for_initial_sync.sh
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
