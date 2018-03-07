@@ -115,8 +115,16 @@ else
     echo "--------------------------------"
     echo "Git Clone Failed, unable to continue this syncronization attempt!"
     echo "Halting without performing any additional work."
+    script_failed=true
 fi
 
-echo '================================================'
-echo ' Git Sync Complete'
-echo '================================================'
+if [ "$script_failed" = true ]; then
+    echo '================================================'
+    echo ' Git Sync Failed'
+    echo '================================================'
+    exit 1
+else
+    echo '================================================'
+    echo ' Git Sync Complete'
+    echo '================================================'
+fi
