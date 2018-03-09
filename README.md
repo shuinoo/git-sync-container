@@ -7,6 +7,7 @@ args: ["-x", "-c", "/opt/wait_for_initial_sync.sh && echo 'do whatever else you 
 ```
 
 ## Todo List:
+- Handle initial sync vs cron sync better. I can should get the script to handle its own first time setup so it will always work.
 - Option to configure the 'lock file' used to wait for the initial synchronization to complete.
 - Option to keep the git repo to save on network downloads
 - Optional Force Overwriting.

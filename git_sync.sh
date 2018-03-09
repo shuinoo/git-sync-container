@@ -52,9 +52,7 @@ if [[ ! -z "${GIT_REPO_BRANCH}" ]]; then git_clone_args+=(-b "${GIT_REPO_BRANCH}
 git_clone_args+=("${TEMP_DIR}")
 
 # Perform the git clone
-set -x
-git clone "${git_clone_args[@]}"
-set +x
+(set -x; git clone "${git_clone_args[@]}")
 
 if [ -d "${TEMP_DIR}" ]; then
 
@@ -68,13 +66,9 @@ if [ -d "${TEMP_DIR}" ]; then
 
     if [[ ! -z "${CHOWN_USER}" ]]; then
         if [[ ! -z "${CHOWN_GROUP}" ]]; then
-            set -x
-            chown -R ${CHOWN_USER}:${CHOWN_GROUP} "${TEMP_DIR}"
-            set +x
+            (set -x; chown -R ${CHOWN_USER}:${CHOWN_GROUP} "${TEMP_DIR}")
         else
-            set -x
-            chown -R ${CHOWN_USER} "${TEMP_DIR}"
-            set +x
+            (set -x; chown -R ${CHOWN_USER} "${TEMP_DIR}")
         fi
     fi
 
@@ -87,9 +81,7 @@ if [ -d "${TEMP_DIR}" ]; then
     echo "--------------------------------"
 
     # Ensure the directory exists before using it.
-    set -x
-    mkdir -p "${DESTINATION_DIRECTORY}"
-    set +x
+    (set -x; mkdir -p "${DESTINATION_DIRECTORY}")
 
     # Construct rsync arguments.
     rsync_args=(-azh --delete)
@@ -97,9 +89,7 @@ if [ -d "${TEMP_DIR}" ]; then
     rsync_args+=("${TEMP_DIR}" "${DESTINATION_DIRECTORY}")
 
     # Perform the rsync.
-    set -x
-    rsync "${rsync_args[@]}"
-    set +x
+    (set -x; rsync "${rsync_args[@]}")
 
     echo "--------------------------------"
     echo "Rsync Complete!"
@@ -107,9 +97,7 @@ if [ -d "${TEMP_DIR}" ]; then
     echo '||||||||||||||||||||||||||||||||'
     echo '/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\'
 
-    set -x
-    rm -rf "${TEMP_DIR}"
-    set +x
+    (set -x; rm -rf "${TEMP_DIR}")
 
 else
     echo "--------------------------------"
