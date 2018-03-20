@@ -23,6 +23,7 @@ function check_variable {
 check_variable "ENVKEY"
 check_variable "ENVKEY_SSH_KEY_VARIABLE"
 check_variable "CRON_SCHEDULE"
+check_variable "PERFORM_INITIAL_SYNC"
 
 
 if [[ ! -z "${ENVKEY}" ]]; then
@@ -42,6 +43,15 @@ if [[ ! -z "${CRON_SCHEDULE}" ]]; then
     crontab /opt/cron_job_file
     
     echo "Done."
+fi
+
+
+if [[ ! -z "${PERFORM_INITIAL_SYNC}" ]]; then
+    if [ "${PERFORM_INITIAL_SYNC}" = true ]; then
+        echo "Performing initial synchronization..."
+        /opt/git_sync.sh
+        echo "Initial synchronization Complete!"
+    fi
 fi
 
 

@@ -86,7 +86,7 @@ if [ -d "${TEMP_DIR}" ]; then
     # Construct rsync arguments.
     rsync_args=(-azh --delete --recursive)
     if [[ ! -z "$VERBOSE" ]]; then rsync_args+=(-v); fi
-    rsync_args+=("${TEMP_DIR}/*" "${DESTINATION_DIRECTORY}")
+    rsync_args+=("${TEMP_DIR}"/* "${DESTINATION_DIRECTORY}")
 
     # Perform the rsync.
     (set -x; rsync "${rsync_args[@]}")
